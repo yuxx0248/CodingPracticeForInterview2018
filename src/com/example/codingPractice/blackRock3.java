@@ -31,8 +31,6 @@ public class blackRock3 {
     public class BankAccount {
         public  String currency;
         public  int num;
-        public  String name;
-
 
         public  int getUnits(){
             return num;
