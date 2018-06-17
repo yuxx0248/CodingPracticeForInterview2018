@@ -1,50 +1,33 @@
 package com.example.codingPractice;
 
-import java.util.Stack;
-
 public class leetcode273 {
-    public static void main(String[] args){
-        int num = 10;
-        Stack s1 = toWords(num);
-        int counter = s1.size()-1;
+    public static final String[] thousand = new String[]{ "", "Thousand", "Million", "Billion" };
+    public static final String[] underTwenty = new String[]{ "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+    public static final String[] tens = new String[]{ "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
 
-        String res = new String();
 
-        while(!s1.empty()){
-                res += translate(Integer.parseInt(s1.pop().toString()));
-                res += unit[counter--] + " ";
-        }
+    public String numberToWords( int num ) {
+        if ( num == 0 ) return "Zero";
 
-        System.out.println(res);
-    }
-
-    public static Stack toWords(int num){
-        Stack stack = new Stack();
-        while(num>0){
-            stack.push(num%1000);
+        String word = "";
+        int i = 0;
+        while ( num > 0 ) {
+            if ( num % 1000 != 0 )
+                word += helper( num % 1000 ) + thousand[ i++ ] + " " + word;
             num /= 1000;
         }
 
-        return stack;
+        return word.trim();
     }
 
-    public static String translate(int num){
-        if (num<10){
-            return nums[num%10] + " ";
-        }else if(num == 10){
-            return dec[1] + " ";
-        }else if(num<20){
-            return tens[num%10] + " ";
-        }else if (num<100){
-            return dec[num/10] + " " + translate(num%10);
-        }else{
-            return nums[num/100] + " Hundred " + translate(num%100);
-        }
+    public String helper( int num ) {
+        if ( num == 0 ) return "";
+        else if ( num < 20 ) {
+            return underTwenty[ num ] + " ";
+        } else if ( num < 100 ) {
+            return tens[ num / 10 ] + " " + helper( num % 10 );
+        } else
+            return underTwenty[ num / 100 ] + " Hundred " + helper( num % 100 );
     }
-
-    public static final String[] unit = new String[]{"","Thousand","Million","Billion"};
-    public static final String[] nums = new String[]{"","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"};
-    public static final String[] tens = new String[]{"","Eleven","Twelve","Thirteen", "Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"};
-    public static final String[] dec = new String[]{"","Ten","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"};
 
 }

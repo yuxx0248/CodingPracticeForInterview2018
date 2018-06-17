@@ -1,34 +1,38 @@
 package com.example.codingPractice;
 
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 public class leetcode155 {
 
     class MinStack {
-        Stack<Integer> stack;
-        LinkedList<Integer> list;
-        /** initialize your data structure here. */
-        public MinStack() {
-            stack = new Stack<>();
-            list = new LinkedList();
+        List<Integer> list;
 
+        /**
+         * initialize your data structure here.
+         */
+        public MinStack() {
+            list = new ArrayList<>(  );
         }
 
-        public void push(int x) {
-            stack.push(x);
+        public void push( int x ) {
+            list.add( x );
         }
 
         public void pop() {
-            stack.pop();
+            list.remove( list.size()-1 );
         }
 
         public int top() {
-            return stack.peek();
+            return list.get( list.size()-1 );
         }
 
         public int getMin() {
-            return 1;
+            int min = Integer.MAX_VALUE;
+            for ( int i : list){
+                min = Math.min( min, i );
+            }
+            return min;
         }
     }
 
