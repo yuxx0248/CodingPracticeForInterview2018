@@ -6,13 +6,12 @@ public class leetcode402 {
 
     public static String removeKdigits( String num, int k ) {
         Stack<Character> stack = new Stack<>();
-        int i = 0;
-        while ( i < num.length() ) {
+        for ( int i = 0; i < num.length(); i++ ) {
             while ( k > 0 && !stack.isEmpty() && stack.peek() > num.charAt( i ) ) {
                 stack.pop();
                 k--;
             }
-            stack.push( num.charAt( i++ ) );
+            stack.push( num.charAt( i ) );
         }
 
         while ( k-- > 0 && !stack.isEmpty() ) {
@@ -29,7 +28,7 @@ public class leetcode402 {
         return sb.length() < 1 ? "0" : sb.toString();
     }
 
-    public static void main (String[] args){
+    public static void main( String[] args ) {
         System.out.println( removeKdigits( "112", 1 ) );
     }
 

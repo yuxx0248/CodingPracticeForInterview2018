@@ -1,79 +1,112 @@
 package com.example.codingPractice;
 
-public class tmp {
+import java.util.Hashtable;
 
-    public void sortColors( int[] nums ) {
-        int start = 0;
-        int end = nums.length - 1;
-        int i = 0;
-        while ( i < end ) {
-            if ( nums[ i ] == 0 ) {
-                swap( nums, start++, i );
-                i = start;
-            } else if ( nums[ i ] == 2 ) swap( nums, end--, i );
-            else i++;
+class LRUCache {
+
+    class DLinkedNode {
+        int key;
+        int value;
+        DLinkedNode pre;
+        DLinkedNode post;
+    }
+
+    /**
+     * Always add the new node right after head;
+     */
+    private void addNode( DLinkedNode node ) {
+        node.pre = head;
+        node.post = head.post;
+
+        head.post.pre = node;
+        head.post = node;
+    }
+
+    /**
+     * Remove an existing node from the linked list.
+     */
+    private void removeNode( DLinkedNode node ) {
+        DLinkedNode pre = node.pre;
+        DLinkedNode post = node.post;
+
+        pre.post = post;
+        post.pre = pre;
+    }
+
+    /**
+     * Move certain node in between to the head.
+     */
+    private void moveToHead( DLinkedNode node ) {
+        this.removeNode( node );
+        this.addNode( node );
+    }
+
+    // pop the current tail.
+    private DLinkedNode popTail() {
+        DLinkedNode res = tail.pre;
+        this.removeNode( res );
+        return res;
+    }
+
+    private Hashtable<Integer, DLinkedNode>
+            cache = new Hashtable<Integer, DLinkedNode>();
+    private int count;
+    private int capacity;
+    private DLinkedNode head, tail;
+
+    public LRUCache( int capacity ) {
+        this.count = 0;
+        this.capacity = capacity;
+
+        head = new DLinkedNode();
+        head.pre = null;
+
+        tail = new DLinkedNode();
+        tail.post = null;
+
+        head.post = tail;
+        tail.pre = head;
+    }
+
+    public int get( int key ) {
+
+        DLinkedNode node = cache.get( key );
+        if ( node == null ) {
+            return -1; // should raise exception here.
         }
+
+        // move the accessed node to the head;
+        this.moveToHead( node );
+
+        return node.value;
     }
 
-    public void swap( int[] nums, int i, int j ) {
-        int tmp = nums[ i ];
-        nums[ i ] = nums[ j ];
-        nums[ j ] = tmp;
-    }
 
+    public void set( int key, int value ) {
+        DLinkedNode node = cache.get( key );
 
-    public ListNode mergeTwoLists( ListNode l1, ListNode l2 ) {
-        ListNode res = new ListNode( 0 );
-        ListNode ptr = res;
-        while ( l1 != null && l2 != null ) {
-            if ( l1.val < l2.val ) {
-                res.next = new ListNode( l1.val );
-                l1 = l1.next;
-                res = res.next;
-            } else {
-                res.next = new ListNode( l2.val );
-                l2 = l2.next;
-                res = res.next;
+        if ( node == null ) {
+
+            DLinkedNode newNode = new DLinkedNode();
+            newNode.key = key;
+            newNode.value = value;
+
+            this.cache.put( key, newNode );
+            this.addNode( newNode );
+
+            ++count;
+
+            if ( count > capacity ) {
+                // pop the tail
+                DLinkedNode tail = this.popTail();
+                this.cache.remove( tail.key );
+                --count;
             }
+        } else {
+            // update the value.
+            node.value = value;
+            this.moveToHead( node );
         }
 
-        while ( l1 != null ) {
-            res.next = new ListNode( l1.val );
-            res = res.next;
-            l1 = l1.next;
-        }
-
-        while ( l2 != null ) {
-            res.next = new ListNode( l2.val );
-            res = res.next;
-            l2 = l2.next;
-        }
-
-        return ptr.next;
     }
-
-    private int expandAroundCenter(String s, int L, int R) {
-        while (L >= 0 && R < s.length() && s.charAt(L) == s.charAt(R)) {
-            L--;
-            R++;
-        }
-        return R - L - 1;
-    }
-
-
-    public String longestPalindrome(String s) {
-        int start = 0, end = 0;
-        for (int i = 0; i < s.length(); i++) {
-            int len1 = expandAroundCenter(s, i, i);
-            int len2 = expandAroundCenter(s, i, i + 1);
-            int len = Math.max(len1, len2);
-            if (len > end - start) {
-                start = i - (len - 1) / 2;
-                end = i + len / 2;
-            }
-        }
-        return s.substring(start, end + 1);
-    }
-
-
 }
