@@ -1,8 +1,5 @@
 package com.example.codingPractice;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class leetcode211 {
 
     public class TrieNode {
@@ -37,29 +34,29 @@ public class leetcode211 {
      */
     public boolean search( String word ) {
         TrieNode curr = root;
-        for ( char c : word.toCharArray() ) {
-            if ( c =='.' ){
-                Queue<TrieNode> q = scan( curr );
-                for ( TrieNode next : q){
-
-                }
-            }
-
-
-
-            int count = c - 'a';
-            if ( curr.next[ count ] == null ) return false;
-            curr = curr.next[ count ];
-        }
-        return curr.isWord;
+        return searchHelper( word.toCharArray(), curr, 0 );
     }
 
-    public Queue<TrieNode> scan ( TrieNode curr ){
-        Queue<TrieNode> q = new LinkedList<>(  );
-        for ( int i = 0; i<26;i++){
-            if ( curr.next[i] != null) q.add(curr.next[i]);
+    public boolean searchHelper( char[] words, TrieNode curr, int level ) {
+        if ( level == words.length ) return curr.isWord;
+        else if ( words[ level ] == '.' ) {
+            for ( int i = 0; i < 26; i++ ) {
+                if ( curr.next[ i ] != null ) {
+                    if ( searchHelper( words, curr.next[ i ], level + 1 ) ) return true;
+                }
+            }
+        } else if ( curr.next[ words[ level ] - 'a' ] != null ) {
+            return searchHelper( words, curr.next[ words[ level ] - 'a' ], level + 1 );
         }
-        return q;
+        return false;
+    }
+
+    public static void main ( String[] args){
+        leetcode211 instance = new leetcode211();
+        instance.addWord( "bad" );
+        instance.addWord( "dad" );
+        instance.addWord( "mad" );
+        System.out.println( instance.search( "bad" ));
     }
 
 }
