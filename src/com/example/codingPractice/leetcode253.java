@@ -30,7 +30,7 @@ public class leetcode253 {
     }
 
 
-    public class Interval {
+    private class Interval {
         int start;
         int end;
 
